@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from "../../supabase";
+import Swal from 'sweetalert2'
 import { Award, Upload, Trash2, ImageIcon, Plus } from 'lucide-react'
 
 const Card = ({ children, className = '' }) => (
@@ -32,7 +33,7 @@ const CertCard = ({ cert, onDelete }) => {
           <div className="w-full aspect-[16/11.5] bg-white/5 animate-pulse" />
         )}
         <img
-          src={cert.Img}
+          src={cert.img}
           alt="Certificate"
           onLoad={() => setImgLoaded(true)}
           className={`w-full aspect-[16/11.5] object-cover group-hover:scale-105 transition-transform duration-500 ${imgLoaded ? 'block' : 'hidden'}`}
@@ -78,18 +79,76 @@ export default function Certificates() {
   const uploadImage = async () => {
     if (!file) return
     setUploading(true)
-    const fileName = `cert-${Date.now()}-${file.name}`
-    await supabase.storage.from('certificate-images').upload(fileName, file)
-    const { data } = supabase.storage.from('certificate-images').getPublicUrl(fileName)
-    await supabase.from('certificates').insert({ Img: data.publicUrl })
-    setFile(null); setPreview(null); setUploading(false)
-    fetchCerts()
+    try {
+      const fileName = `cert-${Date.now()}-${file.name}`
+      const { error: uploadError } = await supabase.storage.from('certificate-images').upload(fileName, file)
+      
+      if (uploadError) throw uploadError
+
+      const { data } = supabase.storage.from('certificate-images').getPublicUrl(fileName)
+      
+      const { error: insertError } = await supabase.from('certificates').insert({ img: data.publicUrl })
+      
+      if (insertError) throw insertError
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Uploaded!',
+        text: 'Certificate has been uploaded successfully.',
+        background: '#0d0d22',
+        color: '#fff'
+      })
+
+      setFile(null); setPreview(null)
+      fetchCerts()
+    } catch (error) {
+      console.error('Upload error:', error)
+      Swal.fire({
+        icon: 'error',
+        title: 'Upload Failed',
+        text: error.message,
+        background: '#0d0d22',
+        color: '#fff'
+      })
+    } finally {
+      setUploading(false)
+    }
   }
 
   const deleteCert = async (id) => {
-    if (!confirm('Delete this certificate?')) return
-    await supabase.from('certificates').delete().eq('id', id)
-    fetchCerts()
+    const result = await Swal.fire({
+      title: 'Delete this certificate?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#6366f1',
+      cancelButtonColor: '#ef4444',
+      confirmButtonText: 'Yes, delete it!',
+      background: '#0d0d22',
+      color: '#fff'
+    })
+
+    if (result.isConfirmed) {
+      try {
+        const { error } = await supabase.from('certificates').delete().eq('id', id)
+        if (error) throw error
+        Swal.fire({
+          icon: 'success',
+          title: 'Deleted!',
+          background: '#0d0d22',
+          color: '#fff'
+        })
+        fetchCerts()
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Delete Failed',
+          text: error.message,
+          background: '#0d0d22',
+          color: '#fff'
+        })
+      }
+    }
   }
 
   return (

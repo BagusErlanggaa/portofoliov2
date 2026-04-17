@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "../../supabase";
+import Swal from "sweetalert2";
 import {
   MessageSquare,
   Pin,
@@ -51,17 +52,61 @@ export default function Comments() {
   }, [filter, search]);
 
   const pin = async (id, value) => {
-    await supabase
-      .from("portfolio_comments")
-      .update({ is_pinned: value })
-      .eq("id", id);
-    fetchComments();
+    try {
+      const { error } = await supabase
+        .from("portfolio_comments")
+        .update({ is_pinned: value })
+        .eq("id", id);
+      if (error) throw error;
+      fetchComments();
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Action Failed",
+        text: error.message,
+        background: "#0d0d22",
+        color: "#fff",
+      });
+    }
   };
 
   const remove = async (id) => {
-    if (!confirm("Delete this comment?")) return;
-    await supabase.from("portfolio_comments").delete().eq("id", id);
-    fetchComments();
+    const result = await Swal.fire({
+      title: "Delete this comment?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#6366f1",
+      cancelButtonColor: "#ef4444",
+      confirmButtonText: "Yes, delete it!",
+      background: "#0d0d22",
+      color: "#fff",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const { error } = await supabase
+          .from("portfolio_comments")
+          .delete()
+          .eq("id", id);
+        if (error) throw error;
+        Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          background: "#0d0d22",
+          color: "#fff",
+        });
+        fetchComments();
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Delete Failed",
+          text: error.message,
+          background: "#0d0d22",
+          color: "#fff",
+        });
+      }
+    }
   };
 
   const pinnedCount = comments.filter((c) => c.is_pinned).length;

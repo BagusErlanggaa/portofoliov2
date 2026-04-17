@@ -4,6 +4,7 @@ import { MessageCircle, UserCircle2, Loader2, AlertCircle, Send, ImagePlus, X, P
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { supabase } from '../supabase';
+import Swal from 'sweetalert2';
 
 
 const Comment = memo(({ comment, formatDate, index, isPinned = false }) => (
@@ -76,15 +77,26 @@ const CommentForm = memo(({ onSubmit, isSubmitting, error }) => {
         if (file) {
             // Check file size (5MB limit)
             if (file.size > 5 * 1024 * 1024) {
-                alert('File size must be less than 5MB. Please choose a smaller image.');
-                // Reset the input
+                Swal.fire({
+                    icon: 'error',
+                    title: 'File Too Large',
+                    text: 'File size must be less than 5MB. Please choose a smaller image.',
+                    background: '#0d0d22',
+                    color: '#fff'
+                });
                 if (e.target) e.target.value = '';
                 return;
             }
             
             // Check file type
             if (!file.type.startsWith('image/')) {
-                alert('Please select a valid image file.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid File Type',
+                    text: 'Please select a valid image file.',
+                    background: '#0d0d22',
+                    color: '#fff'
+                });
                 if (e.target) e.target.value = '';
                 return;
             }
@@ -349,9 +361,26 @@ const Komentar = () => {
             if (error) {
                 throw error;
             }
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Comment Posted!',
+                text: 'Thank you for your comment.',
+                background: '#0d0d22',
+                color: '#fff',
+                timer: 2000,
+                showConfirmButton: false
+            });
         } catch (error) {
             setError('Failed to post comment. Please try again.');
             console.error('Error adding comment: ', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Post Failed',
+                text: 'Failed to post comment. Please check your connection.',
+                background: '#0d0d22',
+                color: '#fff'
+            });
         } finally {
             setIsSubmitting(false);
         }

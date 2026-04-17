@@ -44,14 +44,14 @@ const socialLinks = [
     displayName: "Github",
     subText: "@BagusErlangga",
     icon: Github,
-    url: "https://github.com/BagusErlangga",
+    url: "https://github.com/BagusErlanggaa",
     color: "#ffffff",
     gradient: "from-[#333] to-[#24292e]",
   },
   {
     name: "TikTok",
     displayName: "Tiktok",
-    subText: "@eki_zulfar",
+    subText: "@lanzzx20",
     icon: ({ className, ...props }) => (
       <svg
         width="24px"
@@ -113,7 +113,7 @@ const SocialLinks = () => {
         className="text-xl font-semibold text-white mb-6 flex items-center gap-2"
         data-aos="fade-down" 
       >
-        <span className="inline-block w-8 h-1 bg-indigo-500 rounded-full"></span>
+        <span className="inline-block w-8 h-1 bg-sky-500 rounded-full"></span>
         Connect With Me
       </h3>
 

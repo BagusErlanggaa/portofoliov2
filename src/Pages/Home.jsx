@@ -143,10 +143,10 @@ const Home = () => {
         <title>Muhammad Bagus Erlangga — Full Stack Developer</title>
         <meta name="description" content="Website resmi Muhammad Bagus Erlangga, Full Stack Developer. Seorang Full Stack Developer yang berdedikasi dalam membangun solusi digital inovatif dan berkinerja tinggi. Saya mengombinasikan keunggulan teknis dengan fungsionalitas cerdas untuk menciptakan pengalaman web yang bermakna." />
      <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://ekizr.com" />
+        <link rel="canonical" href="https://baguserlangga.dev" />
         <meta property="og:title" content="Muhammad Bagus Erlangga — Full Stack Developer" />
      <meta property="og:description" content="Website resmi dan portofolio Muhammad Bagus Erlangga, Full Stack Developer. Seorang Full Stack Developer yang berdedikasi dalam membangun solusi digital inovatif dan berkinerja tinggi. Saya mengombinasikan keunggulan teknis dengan fungsionalitas cerdas untuk menciptakan pengalaman web yang bermakna." />
-        <meta property="og:url" content="https://ekizr.com" />
+        <meta property="og:url" content="https://baguserlangga.dev" />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">{`
           {
@@ -154,7 +154,7 @@ const Home = () => {
             "@type": "Person",
             "name": "Muhammad Bagus Erlangga",
             "jobTitle": "Full Stack Developer",
-            "url": "https://ekizr.com",
+            "url": "https://baguserlangga.dev",
             "sameAs": [
               "https://github.com/BagusErlanggaa",
               "https://www.linkedin.com/in/bagus-erlangga/",
